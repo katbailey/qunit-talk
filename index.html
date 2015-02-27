@@ -48,7 +48,7 @@
                         <li class="fragment">Writing testable code</li>
                         <li class="fragment">QUnit testing framework</li>
                         <li class="fragment">Sinon JS for testing AJAX</li>
-                        <li class="fragment">Travis CI and Phantom JS</li>
+                        <li class="fragment">Automation</li>
                     </ul>
                 </section>
                 <section>
@@ -57,7 +57,7 @@
                 </section>
                 <section>
                     <h2>Note</h2>
-                    <p class="answer">Although I focus here on QUnit and Sinon JS, there are other frameworks, e.g. <a href="http://jasmine.github.io/2.2/introduction.html" target="_blank">Jasmine</a>, that provide very similar functionality. The ideas are generally the same across all of these frameworks. </p>
+                    <p class="answer">Although I focus here on QUnit and Sinon JS, there are other frameworks, e.g. <a href="http://jasmine.github.io/2.2/introduction.html" target="_blank">Jasmine</a> and <a href="https://github.com/jakerella/jquery-mockjax" target="_blank">jQuery Mockjax</a>, that provide very similar functionality. The ideas are generally the same across all of these frameworks. </p>
                 </section>
 
                 <section>
@@ -229,32 +229,12 @@
                         </aside>
 
                     </section>
-
-                    <section>
-                        <h4>Search Example - Redux</h4>
-
-                        <pre><code class='lang-javascript' data-srcbyline='example/src/app.js?47-50;52-55'></code></pre>
-                    </section>
-
-                    <section>
-                        <h4>Search Example - Redux</h4>
-
-                        <pre><code class='lang-javascript' data-srcbyline='example/src/app.js?62-72'></code></pre>
-
-                        <aside class="notes">
-                            There are LOTS of ways this could be improved, but the basic idea
-                            is to refactor JavaScript code to be testable independent of as
-                            much of the rest of your code as possible. This ensures that that
-                            little bit of code works as expected.
-                        </aside>
-
-                    </section>
                     <section>
                         <h3>Writing Testable Code</h3>
                         <ul>
                             <li class="fragment">Use namespaces</li>
                             <li class="fragment">Name your functions</li>
-                            <li class="fragment">Write loosely coupled code</li>
+                            <li class="fragment">Avoid tight coupling</li>
                         </ul>
                     </section>
                 </section>
@@ -516,6 +496,49 @@ xhr.onCreate = function (request) {
                         <h3>Grunt</h3>
                         <img src="images/grunt-logo.png" class="borderless" />
                     </section>
+                    <section>
+                        <img src="images/phantomjs_travis.png" class="borderless" />
+                    </section>
+                    <section>
+                        <h3>Travis CI</h3>
+                        <p class="answer">A hosted continuous integration service</p>
+                    </section>
+                    <section>
+                        <h3>Phantom JS</h3>
+                        <p class="answer">A headless browser</p>
+                    </section>
+                    <section>
+                        <h3>Setting it up</h3>
+                        <ul>
+                            <li>Sign in to Travis with your Github account</li>
+                            <li>Activate the github web hook on the project you want to add Travis integration on</li>
+                            <li>Add .travis.yml to your repo</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <pre>
+                            <code>
+language: php
+php:
+- 5.4
+before_install:
+- wget https://raw.githubusercontent.com/jonkemp/qunit-phantomjs-runner/master/runner.js
+script:
+- phantomjs runner.js qunit/test.html
+                            </code>
+                        </pre>
+                    </section>
+                    <section>
+                        <img src="images/Slack.png" class="borderless" />
+                    </section>
+                </section>
+                <section>
+                    <h2>Resources</h2>
+                    <ul>
+                        <li>Jordan Kasper's talk: <a href="http://jordankasper.com/js-testing" target="_blank">http://jordankasper.com/js-testing</a></li>
+                        <li>QUnit documentation: <a href="http://api.qunitjs.com/" target="_blank">http://api.qunitjs.com/</a></li>
+                        <li>Sinon documenation: <a href="http://sinonjs.org/docs" target="_blank">http://sinonjs.org/docs</a></li>
+                    </ul>
                 </section>
 				<section>
 					<h1>Thanks!</h1>
