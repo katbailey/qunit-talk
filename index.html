@@ -46,12 +46,19 @@
                     <ul>
                         <li class="fragment">Why test?</li>
                         <li class="fragment">Writing testable code</li>
-                        <li class="fragment">Testing Frameworks</li>
-                        <li class="fragment">QUnit and Sinon JS</li>
+                        <li class="fragment">QUnit testing framework</li>
+                        <li class="fragment">Sinon JS for testing AJAX</li>
                         <li class="fragment">Travis CI and Phantom JS</li>
                     </ul>
                 </section>
-
+                <section>
+                    <h2>Kudos</h2>
+                    <p class="answer">Big thanks to Jordan Kasper aka @jakerella whose slides on this topic I borrowed heavily from. See <a href="http://jordankasper.com/js-testing" target="_blank">http://jordankasper.com/js-testing</a> </p>
+                </section>
+                <section>
+                    <h2>Note</h2>
+                    <p class="answer">Although I focus here on QUnit and Sinon JS, there are other frameworks, e.g. <a href="http://jasmine.github.io/2.2/introduction.html" target="_blank">Jasmine</a>, that provide very similar functionality. The ideas are generally the same across all of these frameworks. </p>
+                </section>
 
                 <section>
                     <section>
@@ -74,10 +81,187 @@
                         </ul>
                     </section>
                 </section>
+                <section>
+
+                    <section>
+                        <h3>Writing Testable Code</h3>
+
+                        <aside class="notes">
+                            Talk about the fact that we want a more unit-testable approach, but that
+                            integration testing can be very helpful as well.
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h4>Search Example</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/bad.js?2-3;7-11;13-16;20-21;23-25;29-34'></code></pre>
+                    </section>
+
+                    <section>
+                        <h3>What's so bad about that?</h3>
+                    </section>
+
+                    <section>
+                        <h4>Anonymous Functions</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/bad.js?2-3;5;11-12;15-19;23-27;31-34'></code></pre>
+                    </section>
+
+                    <section>
+                        <img src="images/meme-functions.jpg" alt="Meme: I've got functions inside functions... inside functions." />
+                    </section>
+
+                    <section>
+
+                        <h4>Does this look familiar?</h4>
+
+                        <pre><code data-trim class="lang-bash" data-noescape>
+                            <strong>Call Stack</strong>
+                            (anonymous)         app.min.js 3
+                            (anonymous)         app.min.js 3
+                            (anonymous)         app.min.js 3
+                            (anonymous)         app.min.js 3
+                        </pre></code>
+
+                        <aside class="notes">
+                            In production we may have minified code, and be unable to see what's
+                            really going on. Even if it isn't minified, this can make for much
+                            easier diagnosis of a problem.
+                        </aside>
+
+                    </section>
+
+                    <section>
+                        <h4>DOM Coupling</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/bad.js?2;4-6;34'></code></pre>
+
+                        <aside class="notes">
+                            Associating initialization with document onload means we can't test the initialization!
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h4>DOM Coupling</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/bad.js?3-5;8-12;15;18-22;24;27;32-33'></code></pre>
+
+                        <aside class="notes">
+                            Tight coupling with the HTML makes testing outside of the context
+                            of an entire page difficult.
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h4>Server Coupling</h4>
+                        <h5>(and asynchronous activity)</h5>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/bad.js?11;13-15;18;24-25;27;31-32'></code></pre>
+                    </section>
+                    <section>
+                        <h3>Refactor Until It Hurts</h3>
+
+                        <p class="fine fragment">(and then refactor a little more)</p>
+
+                        <aside class="notes">
+                            Discuss refactoring in chuncks, abstract one thing at a time
+                        </aside>
+                    </section>
+
+                    <section>
+                        <h4>Search Example - Redux</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/app.js?2-3;13;31-32;61-62;75-76'></code></pre>
+
+                        <aside class="notes">
+                            Be sure to mention namespacing and the named, separate functions.<br>
+                            Mention callback on doSearch()
+                        </aside>
+
+                    </section>
+
+                    <section>
+
+                        <h4>Now isn't that nice?</h4>
+
+                        <pre><code data-trim class="no-bash" data-noescape>
+                            <strong>Call Stack</strong>
+                            jk.handleResults       app.min.js 3
+                            successHandler         app.min.js 3
+                            jk.doSearch            app.min.js 3
+                            submitHandler          app.min.js 3
+                            jk.initSearch          app.min.js 3
+                            initPage               index.html 376
+                        </pre></code>
+
+                    </section>
+
+                    <section>
+                        <h4>Search Example - Initialization</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/app.js?13-16;20-23;25-29'></code></pre>
+
+                        <pre class='fragment'><code class='lang-javascript' data-srcbyline='example/src/app.js?5-10'></code></pre>
+
+                        <aside class="notes">
+                            Note that we can test this much easier now by passing in whatever
+                            DOM nodes we want to test - loose coupling.
+
+                            Also point out naming of inline functions.
+                        </aside>
+
+                    </section>
+
+                    <section>
+                        <h4>Inline != Anonymous</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/app.js?22;24;26'></code></pre>
+                    </section>
+
+                    <section>
+                        <h4>Search Example - Redux</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/app.js?32;36-38;41;43-45;47-50;53-59'></code></pre>
+
+                        <aside class="notes">
+                            Mention mocking ajax requests (will be mentioned later as well).
+                        </aside>
+
+                    </section>
+
+                    <section>
+                        <h4>Search Example - Redux</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/app.js?47-50;52-55'></code></pre>
+                    </section>
+
+                    <section>
+                        <h4>Search Example - Redux</h4>
+
+                        <pre><code class='lang-javascript' data-srcbyline='example/src/app.js?62-72'></code></pre>
+
+                        <aside class="notes">
+                            There are LOTS of ways this could be improved, but the basic idea
+                            is to refactor JavaScript code to be testable independent of as
+                            much of the rest of your code as possible. This ensures that that
+                            little bit of code works as expected.
+                        </aside>
+
+                    </section>
+                    <section>
+                        <h3>Writing Testable Code</h3>
+                        <ul>
+                            <li class="fragment">Use namespaces</li>
+                            <li class="fragment">Name your functions</li>
+                            <li class="fragment">Write loosely coupled code</li>
+                        </ul>
+                    </section>
+                </section>
 
                 <section>
                     <section>
-                        <h1>Writing Testable Code</h1>
+                        <h2>Personalization Example</h2>
                     </section>
                     <section>
                         <pre><code data-trim contenteditable class="javascript">
@@ -99,23 +283,6 @@ $(document).ready(function() {
         });
     }
 });
-                        </code></pre>
-                    </section>
-                    <section>
-                        <pre><code data-trim contenteditable class="javascript">
-Call Stack
-(anonymous)         some_file.min.js:10
-(anonymous)         some_file.min.js:30
-(anonymous)         some_file.min.js:15
-(anonymous)         some_file.min.js:21
-(anonymous)         some_file.min.js:20
-(anonymous)         some_file.min.js:19
-(anonymous)         some_file.min.js:18
-(anonymous)         some_file.min.js:14
-(anonymous)         some_file.min.js:13
-(anonymous)         some_file.min.js:12
-(anonymous)         some_file.min.js:11
-(anonymous)         some_file.min.js:1
                         </code></pre>
                     </section>
                     <section>
@@ -143,15 +310,6 @@ $(document).ready(function() {
 
 
                         </code></pre>
-                    </section>
-                    <section>
-                        <h3>Writing Testable Code</h3>
-                        <ul>
-                            <li class="fragment">Use namespaces</li>
-                            <li class="fragment">Name your functions</li>
-                            <li class="fragment">Keep your functions simple</li>
-                            <li class="fragment">Closures can be fine as long as...</li>
-                        </ul>
                     </section>
                 </section>
                 <section>
@@ -186,6 +344,9 @@ QUnit.test( "hello test", function( assert ) {
 });
                         </code>
                         </pre>
+                    </section>
+                    <section>
+                        <h3>Let's see an example!</h3>
                     </section>
                     <section>
                         <h2>Fixtures</h2>
@@ -236,6 +397,17 @@ QUnit.module("Tests that rely on some settings", {
                     <section data-transition="none">
                         <h3>What if my code relies on other JS libraries?</h3>
                         <p class="answer">Add them to your test suite</p>
+                    </section>
+                    <section data-transition="none">
+                        <h3>What if my code has asynchronous behaviors?</h3>
+                        <p style="visibility: hidden;"><code>QUnit.async()</code></p>
+                    </section>
+                    <section data-transition="none">
+                        <h3>What if my code has asynchronous behaviors?</h3>
+                        <p class="answer"><code>QUnit.async()</code></p>
+                    </section>
+                    <section data-transition="none">
+                        <img src="images/async_qunit.png" class="borderless" />
                     </section>
                     <section data-transition="none">
                         <h3>What if my code uses AJAX?</h3>
@@ -306,6 +478,44 @@ assert(callback.called);
                     <section>
                         <h2>Back to AJAX...</h2>
                     </section>
+                    <section data-transition="none">
+                        <h3>How do we test AJAX code without triggering network activity?</h3>
+                        <p style="visibility: hidden;">Use a <code>fakeXMLHttpRequest</code> :D</p>
+                    </section>
+                    <section data-transition="none">
+                        <h3>How do we test AJAX code without triggering network activity?</h3>
+                        <p class="answer">Use a <code>fakeXMLHttpRequest</code> :)</p>
+                    </section>
+                    <section>
+
+                        <pre><code data-trim contenteditable class="javascript">
+// Replace the native XMLHttpRequest object with Sinon's fake
+var xhr = sinon.useFakeXMLHttpRequest();
+var requests = [];
+
+xhr.onCreate = function (request) {
+  requests.push(request);
+};
+                        </code>
+
+                        </pre>
+                    </section>
+                    <section>
+                        <h3>Let's put it all together!</h3>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h3>Yay - I haz tests!</h3>
+                        <p class="answer">Now what?</p>
+                    </section>
+                    <section>
+                        <h2>Automation</h2>
+                    </section>
+                    <section>
+                        <h3>Grunt</h3>
+                        <img src="images/grunt-logo.png" class="borderless" />
+                    </section>
                 </section>
 				<section>
 					<h1>Thanks!</h1>
@@ -343,7 +553,8 @@ assert(callback.called);
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
 					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
 					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
-                    { src: 'plugin/tagcloud/tagcloud.js', async: true, }
+                    { src: 'plugin/tagcloud/tagcloud.js', async: true, },
+                    { src: 'node_modules/source-by-line/srcByLine.js', async: true, callback: function() { window.srcbyline.init(); } }
 				]
 			});
 		</script>

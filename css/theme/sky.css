@@ -178,10 +178,12 @@ body {
 
 .reveal pre code {
   max-height: 500px;
+  padding: 20px;
 }
 
 .reveal pre {
   width: 100%;
+  box-shadow: none;
 }
 
 p.answer {
